@@ -1,22 +1,30 @@
 import axios, { AxiosRequestHeaders } from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-const TodoList1 = () => {
+interface headerType extends AxiosRequestHeaders {
+  Authorization: string;
+}
+
+interface propsType {
+  setDetailData: Dispatch<
+    SetStateAction<{
+      title: string;
+      content: string;
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+    }>
+  >;
+}
+
+const List = ({ setDetailData }: propsType) => {
   const [todoData, setTodoData] = useState([]);
-  // const [updateModal, setUpdateModal] = useState(false);
 
-  const navigate = useNavigate();
-
-  interface headerType extends AxiosRequestHeaders {
-    Authorization: string;
-  }
   const headers: headerType = {
     Authorization: localStorage.getItem('token')!,
   };
-
-  useEffect(() => {
+  const getDate = () => {
     axios
       .get('http://localhost:8080/todos', {
         headers: headers,
@@ -24,17 +32,25 @@ const TodoList1 = () => {
       .then((res) => {
         setTodoData(res.data.data);
       });
-  });
+  };
+  useEffect(() => {
+    getDate();
+  }, []);
 
-  const deleteList = async (id: any) => {
+  const deleteList = async (id: string) => {
     await axios.delete(`http://localhost:8080/todos/${id}`, {
       headers: headers,
     });
   };
 
-  const updateHandle = (id: string) => {
-    navigate(`/update/${id}`);
-    // setUpdateModal(true);
+  const openDetail = (id: string) => {
+    axios
+      .get(`http://localhost:8080/todos/${id}`, {
+        headers: headers,
+      })
+      .then((res) => {
+        setDetailData(res.data.data);
+      });
   };
 
   return (
@@ -43,22 +59,20 @@ const TodoList1 = () => {
         <ListWrap>
           <ListHeader>
             <HeaderSpan>Title</HeaderSpan>
-            <HeaderSpan>Content</HeaderSpan>
           </ListHeader>
           {localStorage.getItem('token') &&
-            todoData.map(({ id, title, content }) => {
+            todoData.map(({ id, title }) => {
               return (
-                <div key={id}>
+                <div key={id} onClick={() => openDetail(id)}>
                   <ListBox>
-                    <List>{title}</List>
-                    <Content>{content}</Content>
-                    <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
-                    <UpdateBtn onClick={() => updateHandle(id)}>수정</UpdateBtn>
+                    <ListTitle>{title}</ListTitle>
+                    <div>
+                      <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
+                    </div>
                   </ListBox>
                 </div>
               );
             })}
-          {/* {updateModal && <UpdateList />} */}
         </ListWrap>
       )}
     </>
@@ -86,7 +100,7 @@ const HeaderSpan = styled.span`
   font-weight: 600;
 `;
 
-const List = styled.div`
+const ListTitle = styled.div`
   margin: 10px;
 `;
 
@@ -95,13 +109,4 @@ const DeleteBtn = styled.button`
   height: 30px;
 `;
 
-const UpdateBtn = styled.button`
-  width: 50px;
-  height: 30px;
-`;
-
-const Content = styled.div`
-  margin: 10px;
-`;
-
-export default TodoList1;
+export default List;

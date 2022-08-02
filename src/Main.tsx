@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import TodoList1 from './components/TodoList1';
+import List from './components/List';
 import { Button } from 'antd';
 import axios, { AxiosRequestConfig } from 'axios';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import TodoDetail from './components/TodoDetail';
 
 const Main = () => {
   const [todo, setTodo] = useState({
@@ -10,7 +12,17 @@ const Main = () => {
     content: '',
   });
 
+  const [detailData, setDetailData] = useState({
+    title: '',
+    content: '',
+    id: '',
+    createdAt: '',
+    updatedAt: '',
+  });
+
   const { title, content } = todo;
+
+  const navigate = useNavigate();
 
   const HandleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,6 +44,30 @@ const Main = () => {
       }
     );
   };
+  setTimeout(() => {
+    if (!localStorage.getItem('token')) {
+      alert('로그인을 해주세요.');
+      navigate('/auth');
+    }
+  }, 30000);
+
+  const putTodo = (id: string) => {
+    axios.put(
+      `http://localhost:8080/todos/${id}`,
+      {
+        title: title,
+        content: content,
+      },
+      {
+        headers: headers,
+      }
+    );
+  };
+
+  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDetailData({ ...detailData, [name]: value });
+  };
 
   return (
     <TodoWrap>
@@ -48,8 +84,17 @@ const Main = () => {
             ADD
           </Button>
         </ButtonBox>
-        <TodoList1 />
+        <List setDetailData={setDetailData} />
       </TodoForm>
+      {detailData && (
+        <SideWrap>
+          <TodoDetail
+            data={detailData}
+            onClickList={putTodo}
+            onInputValue={handleInputValue}
+          />
+        </SideWrap>
+      )}
     </TodoWrap>
   );
 };
@@ -57,17 +102,20 @@ const Main = () => {
 export default Main;
 
 const TodoWrap = styled.div`
-  width: 100vw;
-  height: 100vh;
+  display: flex;
+  width: 1200px;
+  margin: 0 auto;
 `;
 
 const TodoForm = styled.form`
-  width: 100%;
-  height: 100%;
+  width: 60%;
+  height: 800px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  border: 1px solid black;
+  margin-top: 150px;
 `;
 
 const TitleInput = styled.input`
@@ -84,4 +132,10 @@ const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
   width: 400px;
+`;
+
+const SideWrap = styled.div`
+  width: 500px;
+  height: 800px;
+  margin-top: 150px;
 `;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +25,6 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
   };
 
   const LoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
     axios
       .post(`http://localhost:8080/users/${url}`, {
         email: email,

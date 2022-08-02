@@ -11,7 +11,11 @@ export default function Main() {
   const navigate = useNavigate();
 
   const loginOpen = () => {
-    setModal('login');
+    if (localStorage.getItem('token')) {
+      navigate('/');
+    } else {
+      setModal('login');
+    }
   };
 
   const signUpOpen = () => {

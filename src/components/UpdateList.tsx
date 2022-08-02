@@ -48,11 +48,11 @@ const UpdateList = () => {
         headers: headers,
       }
     );
-    navigate('/todo');
+    navigate('/');
   };
 
   const updateCancel = () => {
-    navigate('/todo');
+    navigate('/');
   };
 
   return (
