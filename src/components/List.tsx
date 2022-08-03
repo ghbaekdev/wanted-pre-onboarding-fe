@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { Dispatch, SetStateAction } from 'react';
+
 import styled from 'styled-components';
 
 interface todoDataType {
@@ -10,36 +10,19 @@ interface todoDataType {
     createdAt: string;
     updatedAt: string;
   }[];
-  setDetailData: Dispatch<
-    SetStateAction<{
-      title: string;
-      content: string;
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-    }>
-  >;
+  detailData: {
+    title: string;
+    content: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  openDetail: (id: string) => void;
 }
 
 const List = (props: todoDataType) => {
-  const { setDetailData, todoData } = props;
-  // const [todoData, setTodoData] = useState([]);
-
-  // const headers: headerType = {
-  //   Authorization: localStorage.getItem('token')!,
-  // };
-  // const getDate = () => {
-  //   axios
-  //     .get('http://localhost:8080/todos', {
-  //       headers: headers,
-  //     })
-  //     .then((res) => {
-  //       setTodoData(res.data.data);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getDate();
-  // }, []);
+  const { openDetail, todoData, detailData } = props;
 
   const headers = {
     Authorization: localStorage.getItem('token')!,
@@ -49,16 +32,6 @@ const List = (props: todoDataType) => {
     await axios.delete(`http://localhost:8080/todos/${id}`, {
       headers: headers,
     });
-  };
-
-  const openDetail = async (id: string) => {
-    await axios
-      .get(`http://localhost:8080/todos/${id}`, {
-        headers: headers,
-      })
-      .then((res) => {
-        setDetailData(res.data.data);
-      });
   };
 
   return (
@@ -71,14 +44,16 @@ const List = (props: todoDataType) => {
           {localStorage.getItem('token') &&
             todoData.map(({ id, title }) => {
               return (
-                <div key={id} onClick={() => openDetail(id)}>
+                <ListDiv key={id} onClick={() => openDetail(id)}>
                   <ListBox>
-                    <ListTitle>{title}</ListTitle>
+                    <ListTitle>
+                      {id === detailData.id ? detailData.title : title}
+                    </ListTitle>
                     <div>
                       <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
                     </div>
                   </ListBox>
-                </div>
+                </ListDiv>
               );
             })}
         </ListWrap>
@@ -115,6 +90,10 @@ const ListTitle = styled.div`
 const DeleteBtn = styled.button`
   width: 30px;
   height: 30px;
+`;
+
+const ListDiv = styled.div`
+  cursor: pointer;
 `;
 
 export default List;

@@ -100,20 +100,32 @@ const Main = () => {
     setUpdate(false);
   };
 
+  const openDetail = (id: string) => {
+    // await axios
+    //   .get(`http://localhost:8080/todos/${id}`, {
+    //     headers: headers,
+    //   })
+    //   .then((res) => {
+    //     setDetailData(res.data.data);
+    //   });
+    let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
+    setDetailData(test);
+  };
+
   return (
     <TodoWrap>
       <TodoForm>
         <Input
           onChange={HandleInput}
           name="title"
-          placeholder="title"
+          placeholder="Title"
           style={{ width: '500px', margin: '30px', fontSize: '22px' }}
         />
 
         <Input
           onChange={HandleInput}
           name="content"
-          placeholder="description"
+          placeholder="Content"
           type="text"
           style={{ width: '500px', margin: '30px', fontSize: '22px' }}
         />
@@ -122,7 +134,11 @@ const Main = () => {
             ADD
           </Button>
         </ButtonBox>
-        <List setDetailData={setDetailData} todoData={todoData} />
+        <List
+          todoData={todoData}
+          openDetail={openDetail}
+          detailData={detailData}
+        />
       </TodoForm>
       {detailForm && (
         <SideWrap>
