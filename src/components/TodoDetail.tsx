@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import { Input } from 'antd';
 
 interface dataType {
   data: {
@@ -10,8 +11,10 @@ interface dataType {
     createdAt?: string;
     updatedAt?: string;
   };
+  update: boolean;
   onClickList: (id: string) => void;
   onInputValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleState: () => void;
 }
 
 const TodoDetail = (props: dataType): JSX.Element => {
@@ -19,44 +22,49 @@ const TodoDetail = (props: dataType): JSX.Element => {
     data: { title, content, id },
     onClickList,
     onInputValue,
+    handleState,
+    update,
   } = props;
-  const [update, setUpdate] = useState(false);
-
-  const handleState = () => {
-    update ? setUpdate(false) : setUpdate(true);
-  };
-
-  // const headers = {
-  //   Authorization: localStorage.getItem('token')!,
-  // };
-
-  // const = (id: any) => {
-  //   axios.put(
-  //     `http://localhost:8080/todos/${id}`,
-  //     {
-  //       title: data.title,
-  //       content: data.content,
-  //     },
-  //     {
-  //       headers: headers,
-  //     }
-  //   );
-  // };
 
   return (
     <DetailWrap>
       {update ? (
         <DetailForm>
-          <input value={title} name="title" onChange={onInputValue} />
-          <input value={content} name="content" onChange={onInputValue} />
+          <DetailFormSpan>Title</DetailFormSpan>
+          <Input
+            value={title}
+            name="title"
+            style={{
+              margin: '30px',
+              width: '400px',
+              border: 'none',
+              fontSize: '22px',
+            }}
+            onChange={onInputValue}
+          />
+          <DetailFormSpan>Content</DetailFormSpan>
+          <Input
+            value={content}
+            name="content"
+            style={{
+              margin: '30px',
+              width: '400px',
+              border: 'none',
+              fontSize: '22px',
+            }}
+            onChange={onInputValue}
+          />
+
           <Button onClick={handleState}>수정취소</Button>
           <Button onClick={() => onClickList(id)}>수정완료</Button>
         </DetailForm>
       ) : (
         <DetailForm>
+          <DetailFormSpan>Title</DetailFormSpan>
           <TitleLabel> {title}</TitleLabel>
+          <DetailFormSpan>Content</DetailFormSpan>
           <ContentLabel>{content}</ContentLabel>
-          <Button style={{ marginTop: '100px' }} onClick={handleState}>
+          <Button style={{ marginTop: '30px' }} onClick={handleState}>
             수정
           </Button>
         </DetailForm>
@@ -82,11 +90,16 @@ const DetailForm = styled.form`
 `;
 
 const TitleLabel = styled.label`
-  background-color: lightgrey;
+  width: 400px;
   margin: 30px;
-  font-size: 25px;
+  font-size: 22px;
 `;
 
 const ContentLabel = styled(TitleLabel)`
   font-size: 20px;
+`;
+
+const DetailFormSpan = styled.span`
+  font-size: 22px;
+  font-weight: 600;
 `;

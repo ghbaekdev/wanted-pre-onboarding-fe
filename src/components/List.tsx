@@ -1,12 +1,15 @@
-import axios, { AxiosRequestHeaders } from 'axios';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import axios from 'axios';
+import React, { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
-interface headerType extends AxiosRequestHeaders {
-  Authorization: string;
-}
-
-interface propsType {
+interface todoDataType {
+  todoData: {
+    title: string;
+    content: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
   setDetailData: Dispatch<
     SetStateAction<{
       title: string;
@@ -18,24 +21,29 @@ interface propsType {
   >;
 }
 
-const List = ({ setDetailData }: propsType) => {
-  const [todoData, setTodoData] = useState([]);
+const List = (props: todoDataType) => {
+  const { setDetailData, todoData } = props;
+  // const [todoData, setTodoData] = useState([]);
 
-  const headers: headerType = {
+  // const headers: headerType = {
+  //   Authorization: localStorage.getItem('token')!,
+  // };
+  // const getDate = () => {
+  //   axios
+  //     .get('http://localhost:8080/todos', {
+  //       headers: headers,
+  //     })
+  //     .then((res) => {
+  //       setTodoData(res.data.data);
+  //     });
+  // };
+  // useEffect(() => {
+  //   getDate();
+  // }, []);
+
+  const headers = {
     Authorization: localStorage.getItem('token')!,
   };
-  const getDate = () => {
-    axios
-      .get('http://localhost:8080/todos', {
-        headers: headers,
-      })
-      .then((res) => {
-        setTodoData(res.data.data);
-      });
-  };
-  useEffect(() => {
-    getDate();
-  }, []);
 
   const deleteList = async (id: string) => {
     await axios.delete(`http://localhost:8080/todos/${id}`, {
@@ -43,8 +51,8 @@ const List = ({ setDetailData }: propsType) => {
     });
   };
 
-  const openDetail = (id: string) => {
-    axios
+  const openDetail = async (id: string) => {
+    await axios
       .get(`http://localhost:8080/todos/${id}`, {
         headers: headers,
       })

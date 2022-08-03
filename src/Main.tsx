@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import List from './components/List';
 import { Button } from 'antd';
 import axios, { AxiosRequestConfig } from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import TodoDetail from './components/TodoDetail';
+import { Input } from 'antd';
 
 const Main = () => {
   const [todo, setTodo] = useState({
     title: '',
     content: '',
   });
+
+  const [todoData, setTodoData] = useState([]);
 
   const [detailData, setDetailData] = useState({
     title: '',
@@ -19,6 +22,32 @@ const Main = () => {
     createdAt: '',
     updatedAt: '',
   });
+
+  const [update, setUpdate] = useState(false);
+
+  const handleState = () => {
+    update ? setUpdate(false) : setUpdate(true);
+  };
+
+  const detailForm = detailData.id;
+
+  const headers = {
+    Authorization: localStorage.getItem('token')!,
+  };
+
+  const getDate = () => {
+    axios
+      .get('http://localhost:8080/todos', {
+        headers: headers,
+      })
+      .then((res) => {
+        setTodoData(res.data.data);
+      });
+  };
+
+  useEffect(() => {
+    getDate();
+  }, []);
 
   const { title, content } = todo;
 
@@ -29,9 +58,11 @@ const Main = () => {
     setTodo({ ...todo, [name]: value });
   };
 
-  const headers = {
-    Authorization: localStorage.getItem('token')!,
+  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDetailData({ ...detailData, [name]: value });
   };
+
   const todoAdd = async () => {
     await axios.post<AxiosRequestConfig>(
       'http://localhost:8080/todos',
@@ -43,7 +74,10 @@ const Main = () => {
         headers: headers,
       }
     );
+
+    getDate();
   };
+
   setTimeout(() => {
     if (!localStorage.getItem('token')) {
       alert('로그인을 해주세요.');
@@ -51,47 +85,53 @@ const Main = () => {
     }
   }, 30000);
 
-  const putTodo = (id: string) => {
-    axios.put(
+  const putTodo = async (id: string) => {
+    await axios.put(
       `http://localhost:8080/todos/${id}`,
       {
-        title: title,
-        content: content,
+        title: detailData.title,
+        content: detailData.content,
       },
       {
         headers: headers,
       }
     );
-  };
-
-  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setDetailData({ ...detailData, [name]: value });
+    getDate();
+    setUpdate(false);
   };
 
   return (
     <TodoWrap>
       <TodoForm>
-        <TitleInput onChange={HandleInput} name="title" placeholder="title" />
-        <ContentInput
+        <Input
+          onChange={HandleInput}
+          name="title"
+          placeholder="title"
+          style={{ width: '500px', margin: '30px', fontSize: '22px' }}
+        />
+
+        <Input
           onChange={HandleInput}
           name="content"
           placeholder="description"
           type="text"
+          style={{ width: '500px', margin: '30px', fontSize: '22px' }}
         />
         <ButtonBox>
           <Button onClick={todoAdd} style={{ width: '80px', margin: '20px' }}>
             ADD
           </Button>
         </ButtonBox>
-        <List setDetailData={setDetailData} />
+        <List setDetailData={setDetailData} todoData={todoData} />
       </TodoForm>
-      {detailData && (
+      {detailForm && (
         <SideWrap>
           <TodoDetail
             data={detailData}
             onClickList={putTodo}
             onInputValue={handleInputValue}
+            handleState={handleState}
+            update={update}
           />
         </SideWrap>
       )}
@@ -116,16 +156,6 @@ const TodoForm = styled.form`
   flex-direction: column;
   border: 1px solid black;
   margin-top: 150px;
-`;
-
-const TitleInput = styled.input`
-  width: 500px;
-  margin: 30px;
-`;
-
-const ContentInput = styled.input`
-  width: 500px;
-  height: 30px;
 `;
 
 const ButtonBox = styled.div`
