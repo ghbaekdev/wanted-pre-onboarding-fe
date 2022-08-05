@@ -33,7 +33,7 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
       .then((res) => {
         localStorage.setItem('token', res.data.token);
         if (res.data.token) {
-          navigate('/');
+          // navigate('/');
           alert('login success');
         }
       });

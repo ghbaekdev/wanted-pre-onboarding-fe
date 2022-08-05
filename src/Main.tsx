@@ -53,7 +53,7 @@ const Main = () => {
 
   const navigate = useNavigate();
 
-  const HandleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTodo({ ...todo, [name]: value });
   };
@@ -101,29 +101,32 @@ const Main = () => {
   };
 
   const openDetail = (id: string) => {
-    // await axios
-    //   .get(`http://localhost:8080/todos/${id}`, {
-    //     headers: headers,
-    //   })
-    //   .then((res) => {
-    //     setDetailData(res.data.data);
-    //   });
     let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
     setDetailData(test);
+  };
+
+  const detailFormClose = () => {
+    setDetailData({
+      title: '',
+      content: '',
+      id: '',
+      createdAt: '',
+      updatedAt: '',
+    });
   };
 
   return (
     <TodoWrap>
       <TodoForm>
         <Input
-          onChange={HandleInput}
+          onChange={handleTodo}
           name="title"
           placeholder="Title"
           style={{ width: '500px', margin: '30px', fontSize: '22px' }}
         />
 
         <Input
-          onChange={HandleInput}
+          onChange={handleTodo}
           name="content"
           placeholder="Content"
           type="text"
@@ -140,6 +143,7 @@ const Main = () => {
           detailData={detailData}
         />
       </TodoForm>
+      ㄴ
       {detailForm && (
         <SideWrap>
           <TodoDetail
@@ -148,6 +152,7 @@ const Main = () => {
             onInputValue={handleInputValue}
             handleState={handleState}
             update={update}
+            closeForm={detailFormClose}
           />
         </SideWrap>
       )}

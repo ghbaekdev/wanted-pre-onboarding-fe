@@ -11,19 +11,21 @@ interface dataType {
     createdAt?: string;
     updatedAt?: string;
   };
+  closeForm: () => void;
   update: boolean;
   onClickList: (id: string) => void;
   onInputValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleState: () => void;
 }
 
-const TodoDetail = (props: dataType): JSX.Element => {
+const TodoDetail = (props: dataType) => {
   const {
     data: { title, content, id },
     onClickList,
     onInputValue,
     handleState,
     update,
+    closeForm,
   } = props;
 
   return (
@@ -54,9 +56,11 @@ const TodoDetail = (props: dataType): JSX.Element => {
             }}
             onChange={onInputValue}
           />
-
-          <Button onClick={handleState}>수정취소</Button>
-          <Button onClick={() => onClickList(id)}>수정완료</Button>
+          <ButtonWrap>
+            <Button onClick={closeForm}>닫기</Button>
+            <Button onClick={handleState}>수정취소</Button>
+            <Button onClick={() => onClickList(id)}>수정완료</Button>
+          </ButtonWrap>
         </DetailForm>
       ) : (
         <DetailForm>
@@ -64,9 +68,11 @@ const TodoDetail = (props: dataType): JSX.Element => {
           <TitleLabel> {title}</TitleLabel>
           <DetailFormSpan>Content</DetailFormSpan>
           <ContentLabel>{content}</ContentLabel>
-          <Button style={{ marginTop: '30px' }} onClick={handleState}>
-            수정
-          </Button>
+          <ButtonWrap>
+            <Button onClick={closeForm}>닫기</Button>
+
+            <Button onClick={handleState}>수정</Button>
+          </ButtonWrap>
         </DetailForm>
       )}
     </DetailWrap>
@@ -102,4 +108,9 @@ const ContentLabel = styled(TitleLabel)`
 const DetailFormSpan = styled.span`
   font-size: 22px;
   font-weight: 600;
+`;
+
+const ButtonWrap = styled.div`
+  display: flex;
+  margin: auto;
 `;

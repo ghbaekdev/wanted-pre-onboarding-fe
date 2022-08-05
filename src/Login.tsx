@@ -31,34 +31,59 @@ export default function Main() {
     navigate('/auth');
   };
 
+  const goToTodo = () => {
+    navigate('/');
+  };
+
   return (
     <ButtonWrap>
-      <Button
-        onClick={loginOpen}
-        type="primary"
-        style={{ width: '200px', margin: '20px' }}
-      >
-        Login
-      </Button>
-      {modal === 'login' && (
-        <LoginModal
-          data={LOGIN_DATA}
-          closeModal={closeModal}
-          setModal={setModal}
-        />
-      )}
-      <Button onClick={signUpOpen} style={{ width: '200px' }}>
-        Signup
-      </Button>
-      {modal === 'signup' && (
-        <LoginModal
-          data={SIGNUP_DATA}
-          closeModal={closeModal}
-          setModal={setModal}
-        />
-      )}
-      {localStorage.getItem('token') && (
-        <LogoutBtn onClick={logout}>logout</LogoutBtn>
+      {localStorage.getItem('token') ? (
+        <>
+          <Button
+            onClick={goToTodo}
+            style={{ width: '200px', marginTop: '20px' }}
+          >
+            Todo
+          </Button>
+          <Button
+            style={{
+              width: '200px',
+              marginTop: '20px',
+              backgroundColor: 'black',
+              color: 'white',
+            }}
+            onClick={logout}
+          >
+            logout
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            onClick={loginOpen}
+            type="primary"
+            style={{ width: '200px', margin: '20px' }}
+          >
+            Login
+          </Button>
+          {modal === 'login' && (
+            <LoginModal
+              data={LOGIN_DATA}
+              closeModal={closeModal}
+              setModal={setModal}
+            />
+          )}
+          <Button onClick={signUpOpen} style={{ width: '200px' }}>
+            Signup
+          </Button>
+          {modal === 'signup' && (
+            <LoginModal
+              data={SIGNUP_DATA}
+              closeModal={closeModal}
+              setModal={setModal}
+            />
+          )}
+        </>
       )}
     </ButtonWrap>
   );
@@ -71,14 +96,6 @@ const ButtonWrap = styled.div`
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-`;
-
-const LogoutBtn = styled.button`
-  width: 150px;
-  margin: 20px;
-  background-color: black;
-  color: white;
-  border: none;
 `;
 
 interface DataType {
