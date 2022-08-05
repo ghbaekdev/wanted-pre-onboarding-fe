@@ -16,6 +16,7 @@ interface dataType {
   onClickList: (id: string) => void;
   onInputValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleState: () => void;
+  prevDetail: () => void;
 }
 
 const TodoDetail = (props: dataType) => {
@@ -26,6 +27,7 @@ const TodoDetail = (props: dataType) => {
     handleState,
     update,
     closeForm,
+    prevDetail,
   } = props;
 
   return (
@@ -58,6 +60,7 @@ const TodoDetail = (props: dataType) => {
           />
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
+            <Button onClick={prevDetail}>뒤로가기</Button>
             <Button onClick={handleState}>수정취소</Button>
             <Button onClick={() => onClickList(id)}>수정완료</Button>
           </ButtonWrap>
@@ -70,7 +73,7 @@ const TodoDetail = (props: dataType) => {
           <ContentLabel>{content}</ContentLabel>
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
-
+            <Button onClick={prevDetail}>뒤로가기</Button>
             <Button onClick={handleState}>수정</Button>
           </ButtonWrap>
         </DetailForm>

@@ -25,6 +25,7 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
   };
 
   const LoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     axios
       .post(`http://localhost:8080/users/${url}`, {
         email: email,
@@ -33,7 +34,7 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
       .then((res) => {
         localStorage.setItem('token', res.data.token);
         if (res.data.token) {
-          // navigate('/');
+          navigate('/');
           alert('login success');
         }
       });

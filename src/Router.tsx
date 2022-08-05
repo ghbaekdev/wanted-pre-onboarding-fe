@@ -9,6 +9,7 @@ const Router = () => {
       <Routes>
         <Route path="/auth" element={<Login />} />
         <Route path="/" element={<Main />} />
+        <Route path="/:id" element={<Main />} />
       </Routes>
     </BrowserRouter>
   );

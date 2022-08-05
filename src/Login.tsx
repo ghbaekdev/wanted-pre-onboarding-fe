@@ -31,7 +31,7 @@ export default function Main() {
     navigate('/auth');
   };
 
-  const goToTodo = () => {
+  const goTodo = () => {
     navigate('/');
   };
 
@@ -39,11 +39,15 @@ export default function Main() {
     <ButtonWrap>
       {localStorage.getItem('token') ? (
         <>
+          <Button onClick={goTodo} style={{ width: '200px', margin: '20px' }}>
+            <TodoSpan>Todo</TodoSpan>
+          </Button>
           <Button
-            onClick={goToTodo}
-            style={{ width: '200px', marginTop: '20px' }}
+            onClick={loginOpen}
+            type="primary"
+            style={{ width: '200px', margin: '20px' }}
           >
-            Todo
+            Login
           </Button>
           <Button
             style={{
@@ -112,3 +116,7 @@ const LOGIN_DATA: DataType = {
   title: 'Login',
   url: 'login',
 };
+
+const TodoSpan = styled.span`
+  font-weight: 600;
+`;

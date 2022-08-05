@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface todoDataType {
@@ -17,12 +17,10 @@ interface todoDataType {
     createdAt: string;
     updatedAt: string;
   };
-
-  openDetail: (id: string) => void;
 }
 
 const List = (props: todoDataType) => {
-  const { openDetail, todoData, detailData } = props;
+  const { todoData, detailData } = props;
 
   const headers = {
     Authorization: localStorage.getItem('token')!,
@@ -34,6 +32,8 @@ const List = (props: todoDataType) => {
     });
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
       {todoData && (
@@ -44,7 +44,7 @@ const List = (props: todoDataType) => {
           {localStorage.getItem('token') &&
             todoData.map(({ id, title }) => {
               return (
-                <ListDiv key={id} onClick={() => openDetail(id)}>
+                <ListDiv key={id} onClick={() => navigate(`/${id}`)}>
                   <ListBox>
                     <ListTitle>
                       {id === detailData.id ? detailData.title : title}

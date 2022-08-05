@@ -6,6 +6,15 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import TodoDetail from './components/TodoDetail';
 import { Input } from 'antd';
+import { useParams } from 'react-router-dom';
+
+const DETAIL_DATA = {
+  title: '',
+  content: '',
+  id: '',
+  createdAt: '',
+  updatedAt: '',
+};
 
 const Main = () => {
   const [todo, setTodo] = useState({
@@ -15,13 +24,7 @@ const Main = () => {
 
   const [todoData, setTodoData] = useState([]);
 
-  const [detailData, setDetailData] = useState({
-    title: '',
-    content: '',
-    id: '',
-    createdAt: '',
-    updatedAt: '',
-  });
+  const [detailData, setDetailData] = useState(DETAIL_DATA);
 
   const [update, setUpdate] = useState(false);
 
@@ -30,6 +33,8 @@ const Main = () => {
   };
 
   const detailForm = detailData.id;
+
+  const params = useParams();
 
   const headers = {
     Authorization: localStorage.getItem('token')!,
@@ -100,9 +105,21 @@ const Main = () => {
     setUpdate(false);
   };
 
-  const openDetail = (id: string) => {
-    let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
-    setDetailData(test);
+  // const openDetail = (id: string) => {
+  //   let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
+  //   setDetailData(test);
+  // };
+
+  useEffect(() => {
+    if (!params.id || todoData.length === 0) return;
+    let test = todoData.filter(
+      (detail: { id: string }) => detail.id === params.id
+    )[0];
+    test ? setDetailData(test) : setDetailData(DETAIL_DATA);
+  }, [params]);
+
+  const prevDetail = () => {
+    navigate(-1);
   };
 
   const detailFormClose = () => {
@@ -122,7 +139,7 @@ const Main = () => {
           onChange={handleTodo}
           name="title"
           placeholder="Title"
-          style={{ width: '500px', margin: '30px', fontSize: '22px' }}
+          style={{ width: '500px', marginBottom: '30px', fontSize: '22px' }}
         />
 
         <Input
@@ -137,13 +154,9 @@ const Main = () => {
             ADD
           </Button>
         </ButtonBox>
-        <List
-          todoData={todoData}
-          openDetail={openDetail}
-          detailData={detailData}
-        />
+        <List todoData={todoData} detailData={detailData} />
       </TodoForm>
-      ㄴ
+
       {detailForm && (
         <SideWrap>
           <TodoDetail
@@ -153,6 +166,7 @@ const Main = () => {
             handleState={handleState}
             update={update}
             closeForm={detailFormClose}
+            prevDetail={prevDetail}
           />
         </SideWrap>
       )}
@@ -172,11 +186,12 @@ const TodoForm = styled.form`
   width: 60%;
   height: 800px;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   border: 1px solid black;
   margin-top: 150px;
+  overflow: auto;
+  padding: 50px;
 `;
 
 const ButtonBox = styled.div`
@@ -189,4 +204,5 @@ const SideWrap = styled.div`
   width: 500px;
   height: 800px;
   margin-top: 150px;
+  margin-left: 30px;
 `;
