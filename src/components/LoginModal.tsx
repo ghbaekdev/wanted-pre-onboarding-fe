@@ -82,7 +82,6 @@ const MainWrap = styled.div`
   margin: 0 auto;
   position: relative;
   z-index: 11;
-  background: #fff;
 `;
 
 const Overlay = styled.div`
@@ -91,7 +90,6 @@ const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.3);
   z-index: 10;
 `;
 

@@ -32,9 +32,13 @@ const Main = () => {
     update ? setUpdate(false) : setUpdate(true);
   };
 
+  const { title, content } = todo;
+
   const detailForm = detailData.id;
 
   const params = useParams();
+
+  const navigate = useNavigate();
 
   const headers = {
     Authorization: localStorage.getItem('token')!,
@@ -51,12 +55,16 @@ const Main = () => {
   };
 
   useEffect(() => {
+    // if (!params.id) return;
+    let detail = todoData.filter(
+      (detail: { id: string }) => detail.id === params.id
+    )[0];
+    detail ? setDetailData(detail) : setDetailData(DETAIL_DATA);
+  }, [params]);
+
+  useEffect(() => {
     getDate();
   }, []);
-
-  const { title, content } = todo;
-
-  const navigate = useNavigate();
 
   const handleTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -79,7 +87,6 @@ const Main = () => {
         headers: headers,
       }
     );
-
     getDate();
   };
 
@@ -109,14 +116,6 @@ const Main = () => {
   //   let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
   //   setDetailData(test);
   // };
-
-  useEffect(() => {
-    if (!params.id || todoData.length === 0) return;
-    let test = todoData.filter(
-      (detail: { id: string }) => detail.id === params.id
-    )[0];
-    test ? setDetailData(test) : setDetailData(DETAIL_DATA);
-  }, [params]);
 
   const prevDetail = () => {
     navigate(-1);
