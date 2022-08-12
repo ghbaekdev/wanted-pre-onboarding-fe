@@ -101,3 +101,11 @@
 - todoList와 todoDetail을 한개의 state로 사용하려 했으나 typescript를 사용하여 List는 data type이 object Detail은 object 형태여서 state 한개만으로는 불가.
   <br />
   List에서 클릭한 id값과 detail 페이지의 id값이 같을 경우 detail에서 작성된 값이 List에 적용되게 삼항연산자 활용하여 구현.
+
+### 1주차 Refactoring
+
+- 전체적인 함수, 변수 네이밍 부분 부터 접근하여 가독성을 높였습니다.
+
+- custom hooks을 사용하여 useInputs 컴포넌트로 login과 todo 페이지에서 반복되는 부분 훅으로 분리하여 재사용하였습니다.
+
+- axios도 반복되는 부분 base_url을 같이 설정주어 분리하였고 추후 custom hook으로 분리해볼 예정입니다.
