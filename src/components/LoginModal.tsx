@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { customAxios } from '../Auth/customAxios';
+import styled from 'styled-components';
+import useInputs from '../hooks/useInputs';
 
 interface propsType {
   data: { title: string; url: string };
@@ -9,30 +10,24 @@ interface propsType {
   setModal: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
-  const [userInfo, setUserInfo] = useState({
+const Login = ({ data: { title, url }, closeModal }: propsType) => {
+  const [{ email, password }, handleInput] = useInputs({
     email: '',
     password: '',
   });
 
-  const { email, password } = userInfo;
-
   const navigate = useNavigate();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserInfo({ ...userInfo, [name]: value });
-  };
-
-  const LoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const LoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    axios
-      .post(`http://localhost:8080/users/${url}`, {
+
+    await customAxios
+      .post(`/users/${url}`, {
         email: email,
         password: password,
       })
       .then((res) => {
-        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('access_token', res.data.token);
         if (res.data.token) {
           navigate('/');
           alert('login success');
@@ -40,7 +35,7 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
       });
   };
 
-  const infoCondition =
+  const isInfoCondition =
     email.includes('.') && email.includes('@') && password.length >= 8;
 
   return (
@@ -49,14 +44,14 @@ const Login = ({ data: { title, url }, closeModal, setModal }: propsType) => {
       <MainWrap>
         <MainForm onSubmit={LoginSubmit}>
           <FormTitle>{title}</FormTitle>
-          <LoginInput onChange={onChange} placeholder="email" name="email" />
+          <LoginInput onChange={handleInput} placeholder="email" name="email" />
           <LoginInput
-            onChange={onChange}
+            onChange={handleInput}
             placeholder="password"
             name="password"
             type="password"
           />
-          <LoginBtn type="submit" disabled={!infoCondition}>
+          <LoginBtn type="submit" disabled={!isInfoCondition}>
             {title}
           </LoginBtn>
           <CloseBtn onClick={closeModal}>x</CloseBtn>

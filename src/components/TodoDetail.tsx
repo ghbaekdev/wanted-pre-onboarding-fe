@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import styled from 'styled-components';
-import { Input } from 'antd';
 
 interface dataType {
   data: {
@@ -15,21 +14,19 @@ interface dataType {
   update: boolean;
   onClickList: (id: string) => void;
   onInputValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleState: () => void;
+  handleEditMode: () => void;
   prevDetail: () => void;
 }
 
-const TodoDetail = (props: dataType) => {
-  const {
-    data: { title, content, id },
-    onClickList,
-    onInputValue,
-    handleState,
-    update,
-    closeForm,
-    prevDetail,
-  } = props;
-
+const TodoDetail = ({
+  data: { title, content, id, createdAt, updatedAt },
+  closeForm,
+  update,
+  onClickList,
+  onInputValue,
+  handleEditMode,
+  prevDetail,
+}: dataType) => {
   return (
     <DetailWrap>
       {update ? (
@@ -41,7 +38,6 @@ const TodoDetail = (props: dataType) => {
             style={{
               margin: '30px',
               width: '400px',
-              border: 'none',
               fontSize: '22px',
             }}
             onChange={onInputValue}
@@ -53,7 +49,6 @@ const TodoDetail = (props: dataType) => {
             style={{
               margin: '30px',
               width: '400px',
-              border: 'none',
               fontSize: '22px',
             }}
             onChange={onInputValue}
@@ -61,7 +56,7 @@ const TodoDetail = (props: dataType) => {
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>
-            <Button onClick={handleState}>수정취소</Button>
+            <Button onClick={handleEditMode}>수정취소</Button>
             <Button onClick={() => onClickList(id)}>수정완료</Button>
           </ButtonWrap>
         </DetailForm>
@@ -74,7 +69,7 @@ const TodoDetail = (props: dataType) => {
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>
-            <Button onClick={handleState}>수정</Button>
+            <Button onClick={handleEditMode}>수정</Button>
           </ButtonWrap>
         </DetailForm>
       )}

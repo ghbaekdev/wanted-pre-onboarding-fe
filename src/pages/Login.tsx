@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import LoginModal from '../components/LoginModal';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
-import LoginModal from './components/LoginModal';
+import styled from 'styled-components';
+
+interface DataType {
+  title: string;
+  url: string;
+}
 
 export default function Main() {
   const [modal, setModal] = useState('');
@@ -11,7 +16,7 @@ export default function Main() {
   const navigate = useNavigate();
 
   const loginOpen = () => {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('access_token')) {
       navigate('/');
     } else {
       setModal('login');
@@ -27,7 +32,7 @@ export default function Main() {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
     navigate('/auth');
   };
 
@@ -37,7 +42,7 @@ export default function Main() {
 
   return (
     <ButtonWrap>
-      {localStorage.getItem('token') ? (
+      {localStorage.getItem('access_token') ? (
         <>
           <Button onClick={goTodo} style={{ width: '200px', margin: '20px' }}>
             <TodoSpan>Todo</TodoSpan>
@@ -102,10 +107,9 @@ const ButtonWrap = styled.div`
   height: 100vh;
 `;
 
-interface DataType {
-  title: string;
-  url: string;
-}
+const TodoSpan = styled.span`
+  font-weight: 600;
+`;
 
 const SIGNUP_DATA: DataType = {
   title: 'Sign up',
@@ -116,7 +120,3 @@ const LOGIN_DATA: DataType = {
   title: 'Login',
   url: 'login',
 };
-
-const TodoSpan = styled.span`
-  font-weight: 600;
-`;

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -17,22 +16,16 @@ interface todoDataType {
     createdAt: string;
     updatedAt: string;
   };
+  deleteList: (id: string) => void;
+  isToken: string | null;
 }
 
-const List = (props: todoDataType) => {
-  const { todoData, detailData } = props;
-
-  const headers = {
-    Authorization: localStorage.getItem('token')!,
-  };
-
-  const deleteList = async (id: string) => {
-    await axios.delete(`http://localhost:8080/todos/${id}`, {
-      headers: headers,
-    });
-  };
-
+const List = ({ todoData, detailData, deleteList, isToken }: todoDataType) => {
   const navigate = useNavigate();
+
+  const goToDetail = (id: string) => {
+    navigate(`/${id}`);
+  };
 
   return (
     <>
@@ -41,10 +34,10 @@ const List = (props: todoDataType) => {
           <ListHeader>
             <HeaderSpan>Title</HeaderSpan>
           </ListHeader>
-          {localStorage.getItem('token') &&
+          {isToken &&
             todoData.map(({ id, title }) => {
               return (
-                <ListDiv key={id} onClick={() => navigate(`/${id}`)}>
+                <ListDiv key={id} onClick={() => goToDetail(id)}>
                   <ListBox>
                     <ListTitle>
                       {id === detailData.id ? detailData.title : title}

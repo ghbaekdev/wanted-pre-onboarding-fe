@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Input } from 'antd';
+import { customAxios } from './Auth/customAxios';
 import List from './components/List';
-import { Button } from 'antd';
-import axios, { AxiosRequestConfig } from 'axios';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import TodoDetail from './components/TodoDetail';
-import { Input } from 'antd';
-import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import useInputs from './hooks/useInputs';
 
 const DETAIL_DATA = {
   title: '',
@@ -17,7 +16,7 @@ const DETAIL_DATA = {
 };
 
 const Main = () => {
-  const [todo, setTodo] = useState({
+  const [{ title, content }, handleInput] = useInputs({
     title: '',
     content: '',
   });
@@ -28,121 +27,89 @@ const Main = () => {
 
   const [update, setUpdate] = useState(false);
 
-  const handleState = () => {
-    update ? setUpdate(false) : setUpdate(true);
+  const handleEditMode = () => {
+    setUpdate(!update);
   };
 
-  const { title, content } = todo;
-
   const detailForm = detailData.id;
+
+  const isToken = localStorage.getItem('access_token');
 
   const params = useParams();
 
   const navigate = useNavigate();
 
-  const headers = {
-    Authorization: localStorage.getItem('token')!,
-  };
-
-  const getDate = () => {
-    axios
-      .get('http://localhost:8080/todos', {
-        headers: headers,
-      })
-      .then((res) => {
-        setTodoData(res.data.data);
-      });
+  const getDate = async () => {
+    await customAxios.get('/todos').then((res) => {
+      setTodoData(res.data.data);
+    });
   };
 
   useEffect(() => {
-    // if (!params.id) return;
-    let detail = todoData.filter(
-      (detail: { id: string }) => detail.id === params.id
-    )[0];
-    detail ? setDetailData(detail) : setDetailData(DETAIL_DATA);
+    const detailId = params.id;
+    if (!detailId) return;
+    customAxios.get(`/todos/${detailId}`).then((res) => {
+      res.data.data ? setDetailData(res.data.data) : setDetailData(DETAIL_DATA);
+    });
   }, [params]);
 
   useEffect(() => {
     getDate();
   }, []);
 
-  const handleTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTodo({ ...todo, [name]: value });
-  };
-
-  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDetailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDetailData({ ...detailData, [name]: value });
   };
 
   const todoAdd = async () => {
-    await axios.post<AxiosRequestConfig>(
-      'http://localhost:8080/todos',
-      {
-        title: title,
-        content: content,
-      },
-      {
-        headers: headers,
-      }
-    );
+    await customAxios.post(`/todos`, {
+      title: title,
+      content: content,
+    });
     getDate();
   };
 
   setTimeout(() => {
-    if (!localStorage.getItem('token')) {
+    if (!isToken) {
       alert('로그인을 해주세요.');
       navigate('/auth');
     }
   }, 30000);
 
   const putTodo = async (id: string) => {
-    await axios.put(
-      `http://localhost:8080/todos/${id}`,
-      {
-        title: detailData.title,
-        content: detailData.content,
-      },
-      {
-        headers: headers,
-      }
-    );
+    await customAxios.put(`/todos/${id}`, {
+      title: detailData.title,
+      content: detailData.content,
+    });
     getDate();
-    setUpdate(false);
+    setUpdate(!update);
   };
-
-  // const openDetail = (id: string) => {
-  //   let test = todoData.filter((detail: { id: string }) => detail.id === id)[0];
-  //   setDetailData(test);
-  // };
 
   const prevDetail = () => {
     navigate(-1);
   };
 
-  const detailFormClose = () => {
-    setDetailData({
-      title: '',
-      content: '',
-      id: '',
-      createdAt: '',
-      updatedAt: '',
-    });
+  const CloseDetail = () => {
+    setDetailData(DETAIL_DATA);
+  };
+
+  const deleteList = async (id: string) => {
+    await customAxios.delete(`/todos/${id}`);
   };
 
   return (
     <TodoWrap>
       <TodoForm>
         <Input
-          onChange={handleTodo}
+          onChange={handleInput}
           name="title"
           placeholder="Title"
           style={{ width: '500px', marginBottom: '30px', fontSize: '22px' }}
         />
 
         <Input
-          onChange={handleTodo}
+          onChange={handleInput}
           name="content"
           placeholder="Content"
           type="text"
@@ -153,7 +120,12 @@ const Main = () => {
             ADD
           </Button>
         </ButtonBox>
-        <List todoData={todoData} detailData={detailData} />
+        <List
+          todoData={todoData}
+          detailData={detailData}
+          deleteList={deleteList}
+          isToken={isToken}
+        />
       </TodoForm>
 
       {detailForm && (
@@ -161,10 +133,10 @@ const Main = () => {
           <TodoDetail
             data={detailData}
             onClickList={putTodo}
-            onInputValue={handleInputValue}
-            handleState={handleState}
+            onInputValue={handleDetailInput}
+            handleEditMode={handleEditMode}
             update={update}
-            closeForm={detailFormClose}
+            closeForm={CloseDetail}
             prevDetail={prevDetail}
           />
         </SideWrap>
