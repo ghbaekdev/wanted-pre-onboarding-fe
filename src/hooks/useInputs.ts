@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-const useInputs = (initialValue: any) => {
+type InputType = {
+  title: string;
+  content: string;
+};
+
+const useInputs = (initialValue: InputType) => {
   const [inputValue, setInputValue] = useState(initialValue);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -8,7 +13,7 @@ const useInputs = (initialValue: any) => {
     setInputValue({ ...inputValue, [name]: value });
   };
 
-  return [inputValue, handleInput];
+  return { inputValue, handleInput };
 };
 
 export default useInputs;

@@ -16,7 +16,10 @@ const DETAIL_DATA = {
 };
 
 const Main = () => {
-  const [{ title, content }, handleInput] = useInputs({
+  const {
+    inputValue: { title, content },
+    handleInput,
+  } = useInputs({
     title: '',
     content: '',
   });
