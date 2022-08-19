@@ -34,14 +34,13 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
       .then((res) => {
         localStorage.setItem('access_token', res.data.token);
         if (res.data.token) {
-          navigate('/');
+          navigate(`/todo`);
           alert('login success');
         }
       });
   };
 
-  const isInfoCondition =
-    email.includes('.') && email.includes('@') && password.length >= 8;
+  const isInfoCondition = email.includes('@') && password.length >= 8;
 
   return (
     <Wrap>

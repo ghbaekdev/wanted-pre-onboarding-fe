@@ -3,18 +3,16 @@ import styled from 'styled-components';
 
 interface todoDataType {
   todoData: {
-    title: string;
-    content: string;
-    id: string;
-    createdAt: string;
-    updatedAt: string;
+    todo: string;
+    id: number;
+    isCompleted: boolean;
+    userId: number;
   }[];
   detailData: {
-    title: string;
-    content: string;
-    id: string;
-    createdAt: string;
-    updatedAt: string;
+    todo: string;
+    id: number;
+    isCompleted: boolean;
+    userId: number;
   };
   deleteList: (id: string) => void;
   isToken: string | null;

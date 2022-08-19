@@ -17,7 +17,7 @@ export default function Main() {
 
   const loginOpen = () => {
     if (localStorage.getItem('access_token')) {
-      navigate('/');
+      navigate('/todo');
     } else {
       setModal('login');
     }
@@ -37,7 +37,7 @@ export default function Main() {
   };
 
   const goTodo = () => {
-    navigate('/');
+    navigate('/todo');
   };
 
   return (

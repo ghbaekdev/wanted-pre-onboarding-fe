@@ -8,19 +8,17 @@ import styled from 'styled-components';
 import useInputs from './hooks/useInputs';
 
 const DETAIL_DATA = {
-  title: '',
-  content: '',
+  todo: '',
   id: '',
-  createdAt: '',
-  updatedAt: '',
+  isCompleted: '',
+  userId: '',
 };
 
 interface dataType {
-  title: string;
-  content: string;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  todo: string;
+  isCompleted: boolean;
+  userId: number;
 }
 
 const Main = () => {
@@ -28,8 +26,7 @@ const Main = () => {
     inputValue: { title, content },
     handleInput,
   } = useInputs({
-    title: '',
-    content: '',
+    todo: '',
   });
 
   const [todoData, setTodoData] = useState<dataType[]>([]);
@@ -84,14 +81,14 @@ const Main = () => {
   setTimeout(() => {
     if (!isToken) {
       alert('로그인을 해주세요.');
-      navigate('/auth');
+      navigate('/');
     }
   }, 30000);
 
   const putTodo = async (id: string) => {
     await customAxios.put(`/todos/${id}`, {
-      title: detailData.title,
-      content: detailData.content,
+      title: detailData.todo,
+      isCompleted: detailData.isCompleted,
     });
     getDate();
 
