@@ -72,6 +72,11 @@ const Main = () => {
 
   useEffect(() => {
     getDate();
+
+    // if (!isToken) {
+    //   navigate('/');
+    //   alert)
+    // }
   }, []);
 
   const handleDetailInput = (e: React.ChangeEvent<HTMLInputElement>) => {

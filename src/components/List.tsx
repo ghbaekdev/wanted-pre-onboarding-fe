@@ -38,7 +38,6 @@ const List = ({
         <ListWrap>
           <ListHeader>
             <HeaderSpan>Title</HeaderSpan>
-            <input type="checkbox" />
           </ListHeader>
           {isToken &&
             todoData.map(({ id, todo, isCompleted }) => {
