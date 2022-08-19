@@ -15,6 +15,14 @@ const DETAIL_DATA = {
   updatedAt: '',
 };
 
+interface dataType {
+  title: string;
+  content: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Main = () => {
   const {
     inputValue: { title, content },
@@ -24,7 +32,7 @@ const Main = () => {
     content: '',
   });
 
-  const [todoData, setTodoData] = useState([]);
+  const [todoData, setTodoData] = useState<dataType[]>([]);
 
   const [detailData, setDetailData] = useState(DETAIL_DATA);
 
@@ -43,7 +51,7 @@ const Main = () => {
   const navigate = useNavigate();
 
   const getDate = async () => {
-    await customAxios.get('/todos').then((res) => {
+    await customAxios.get(`/todos`).then((res) => {
       setTodoData(res.data.data);
     });
   };
@@ -86,6 +94,7 @@ const Main = () => {
       content: detailData.content,
     });
     getDate();
+
     setUpdate(!update);
   };
 

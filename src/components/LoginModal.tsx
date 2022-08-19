@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { customAxios } from '../Auth/customAxios';
 import styled from 'styled-components';
-import useInputs from '../hooks/useInputs';
 
 interface propsType {
   data: { title: string; url: string };
@@ -11,11 +10,17 @@ interface propsType {
 }
 
 const Login = ({ data: { title, url }, closeModal }: propsType) => {
-  const [{ email, password }, handleInput] = useInputs({
+  const [loginInputValue, setLoginInputValue] = useState({
     email: '',
     password: '',
   });
 
+  const { email, password } = loginInputValue;
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginInputValue({ ...loginInputValue, [name]: value });
+  };
   const navigate = useNavigate();
 
   const LoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
