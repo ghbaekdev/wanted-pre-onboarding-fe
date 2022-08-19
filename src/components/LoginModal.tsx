@@ -27,13 +27,13 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
     e.preventDefault();
 
     await customAxios
-      .post(`/users/${url}`, {
+      .post(`/auth/${url}`, {
         email: email,
         password: password,
       })
       .then((res) => {
-        localStorage.setItem('access_token', res.data.token);
-        if (res.data.token) {
+        localStorage.setItem('access_token', res.data.access_token);
+        if (res.data.access_token) {
           navigate(`/todo`);
           alert('login success');
         }

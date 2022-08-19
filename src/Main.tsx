@@ -5,29 +5,40 @@ import { customAxios } from './Auth/customAxios';
 import List from './components/List';
 import TodoDetail from './components/TodoDetail';
 import styled from 'styled-components';
-import useInputs from './hooks/useInputs';
 
 const DETAIL_DATA = {
   todo: '',
   id: '',
-  isCompleted: '',
+  isCompleted: false,
   userId: '',
 };
 
 interface dataType {
-  id: number;
+  id: string;
   todo: string;
   isCompleted: boolean;
-  userId: number;
+  userId: string;
 }
 
+export const isToken = localStorage.getItem('access_token');
+
 const Main = () => {
-  const {
-    inputValue: { title, content },
-    handleInput,
-  } = useInputs({
+  const [inputValue, setInputValue] = useState({
     todo: '',
+    isCompleted: false,
   });
+
+  const { todo, isCompleted } = inputValue;
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputValue({ ...inputValue, [name]: value });
+  };
+
+  const checkedInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setInputValue({ ...inputValue, [name]: checked });
+  };
 
   const [todoData, setTodoData] = useState<dataType[]>([]);
 
@@ -41,24 +52,22 @@ const Main = () => {
 
   const detailForm = detailData.id;
 
-  const isToken = localStorage.getItem('access_token');
-
   const params = useParams();
 
   const navigate = useNavigate();
 
   const getDate = async () => {
     await customAxios.get(`/todos`).then((res) => {
-      setTodoData(res.data.data);
+      setTodoData(res.data);
     });
   };
 
   useEffect(() => {
     const detailId = params.id;
     if (!detailId) return;
-    customAxios.get(`/todos/${detailId}`).then((res) => {
-      res.data.data ? setDetailData(res.data.data) : setDetailData(DETAIL_DATA);
-    });
+
+    const filterData: any = todoData.filter((todo) => todo.id == detailId)[0];
+    filterData ? setDetailData(filterData) : setDetailData(DETAIL_DATA);
   }, [params]);
 
   useEffect(() => {
@@ -72,8 +81,7 @@ const Main = () => {
 
   const todoAdd = async () => {
     await customAxios.post(`/todos`, {
-      title: title,
-      content: content,
+      todo: todo,
     });
     getDate();
   };
@@ -87,7 +95,7 @@ const Main = () => {
 
   const putTodo = async (id: string) => {
     await customAxios.put(`/todos/${id}`, {
-      title: detailData.todo,
+      todo: detailData.todo,
       isCompleted: detailData.isCompleted,
     });
     getDate();
@@ -112,17 +120,9 @@ const Main = () => {
       <TodoForm>
         <Input
           onChange={handleInput}
-          name="title"
+          name="todo"
           placeholder="Title"
           style={{ width: '500px', marginBottom: '30px', fontSize: '22px' }}
-        />
-
-        <Input
-          onChange={handleInput}
-          name="content"
-          placeholder="Content"
-          type="text"
-          style={{ width: '500px', margin: '30px', fontSize: '22px' }}
         />
         <ButtonBox>
           <Button onClick={todoAdd} style={{ width: '80px', margin: '20px' }}>
@@ -134,6 +134,7 @@ const Main = () => {
           detailData={detailData}
           deleteList={deleteList}
           isToken={isToken}
+          checkedInput={checkedInput}
         />
       </TodoForm>
 

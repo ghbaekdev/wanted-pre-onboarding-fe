@@ -4,11 +4,10 @@ import styled from 'styled-components';
 
 interface dataType {
   data: {
-    title: string;
-    content: string;
+    todo: string;
     id: string;
-    createdAt?: string;
-    updatedAt?: string;
+    isCompleted: boolean;
+    userId: string;
   };
   closeForm: () => void;
   update: boolean;
@@ -19,7 +18,7 @@ interface dataType {
 }
 
 const TodoDetail = ({
-  data: { title, content, id, createdAt, updatedAt },
+  data: { todo, id, isCompleted },
   closeForm,
   update,
   onClickList,
@@ -33,8 +32,8 @@ const TodoDetail = ({
         <DetailForm>
           <DetailFormSpan>Title</DetailFormSpan>
           <Input
-            value={title}
-            name="title"
+            value={todo}
+            name="todo"
             style={{
               margin: '30px',
               width: '400px',
@@ -42,7 +41,7 @@ const TodoDetail = ({
             }}
             onChange={onInputValue}
           />
-          <DetailFormSpan>Content</DetailFormSpan>
+          {/* <DetailFormSpan>Content</DetailFormSpan>
           <Input
             value={content}
             name="content"
@@ -52,7 +51,7 @@ const TodoDetail = ({
               fontSize: '22px',
             }}
             onChange={onInputValue}
-          />
+          /> */}
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>
@@ -63,9 +62,9 @@ const TodoDetail = ({
       ) : (
         <DetailForm>
           <DetailFormSpan>Title</DetailFormSpan>
-          <TitleLabel> {title}</TitleLabel>
-          <DetailFormSpan>Content</DetailFormSpan>
-          <ContentLabel>{content}</ContentLabel>
+          <TitleLabel> {todo}</TitleLabel>
+          {/* <DetailFormSpan>Content</DetailFormSpan>
+          <ContentLabel>{content}</ContentLabel> */}
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>

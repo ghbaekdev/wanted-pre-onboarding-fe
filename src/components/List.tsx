@@ -4,25 +4,32 @@ import styled from 'styled-components';
 interface todoDataType {
   todoData: {
     todo: string;
-    id: number;
+    id: string;
     isCompleted: boolean;
-    userId: number;
+    userId: string;
   }[];
   detailData: {
     todo: string;
-    id: number;
+    id: string;
     isCompleted: boolean;
-    userId: number;
+    userId: string;
   };
   deleteList: (id: string) => void;
   isToken: string | null;
+  checkedInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const List = ({ todoData, detailData, deleteList, isToken }: todoDataType) => {
+const List = ({
+  todoData,
+  detailData,
+  deleteList,
+  isToken,
+  checkedInput,
+}: todoDataType) => {
   const navigate = useNavigate();
 
   const goToDetail = (id: string) => {
-    navigate(`/${id}`);
+    navigate(`/todo/${id}`);
   };
 
   return (
@@ -31,16 +38,22 @@ const List = ({ todoData, detailData, deleteList, isToken }: todoDataType) => {
         <ListWrap>
           <ListHeader>
             <HeaderSpan>Title</HeaderSpan>
+            <input type="checkbox" />
           </ListHeader>
           {isToken &&
-            todoData.map(({ id, title }) => {
+            todoData.map(({ id, todo, isCompleted }) => {
               return (
-                <ListDiv key={id} onClick={() => goToDetail(id)}>
+                <ListDiv key={id}>
                   <ListBox>
-                    <ListTitle>
-                      {id === detailData.id ? detailData.title : title}
+                    <ListTitle onClick={() => goToDetail(id)}>
+                      {id === detailData.id ? detailData.todo : todo}
                     </ListTitle>
                     <div>
+                      <input
+                        type="checkbox"
+                        name="isCompleted"
+                        onChange={checkedInput}
+                      />
                       <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
                     </div>
                   </ListBox>

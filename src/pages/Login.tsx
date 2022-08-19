@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginModal from '../components/LoginModal';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
+import { isToken } from '../Main';
 
 interface DataType {
   title: string;
@@ -33,12 +34,16 @@ export default function Main() {
 
   const logout = () => {
     localStorage.removeItem('access_token');
-    navigate('/auth');
+    navigate('/');
   };
 
   const goTodo = () => {
     navigate('/todo');
   };
+
+  useEffect(() => {
+    isToken && navigate(`/todo`);
+  }, []);
 
   return (
     <ButtonWrap>
@@ -113,10 +118,10 @@ const TodoSpan = styled.span`
 
 const SIGNUP_DATA: DataType = {
   title: 'Sign up',
-  url: 'create',
+  url: 'signup',
 };
 
 const LOGIN_DATA: DataType = {
   title: 'Login',
-  url: 'login',
+  url: 'signin',
 };
