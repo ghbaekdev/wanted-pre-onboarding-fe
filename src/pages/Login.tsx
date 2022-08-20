@@ -4,7 +4,8 @@ import LoginModal from '../components/LoginModal';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import styled from 'styled-components';
-import { isToken } from '../Main';
+import { useRecoilState } from 'recoil';
+import { userTokenState } from '../store/store';
 
 interface DataType {
   title: string;
@@ -13,6 +14,8 @@ interface DataType {
 
 export default function Main() {
   const [modal, setModal] = useState('');
+
+  const [token, setToken] = useRecoilState(userTokenState);
 
   const navigate = useNavigate();
 
@@ -34,6 +37,7 @@ export default function Main() {
 
   const logout = () => {
     localStorage.removeItem('access_token');
+    setToken('');
     navigate('/');
   };
 
@@ -42,8 +46,11 @@ export default function Main() {
   };
 
   useEffect(() => {
-    isToken && navigate(`/todo`);
-  }, []);
+    if (token) {
+      navigate('/todo');
+      alert('login success');
+    }
+  }, [token]);
 
   return (
     <ButtonWrap>

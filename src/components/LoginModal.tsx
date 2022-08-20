@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { customAxios } from '../Auth/customAxios';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { userTokenState } from '../store/store';
 
 interface propsType {
   data: { title: string; url: string };
@@ -16,6 +18,8 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
   });
 
   const { email, password } = loginInputValue;
+
+  const [token, setToken] = useRecoilState(userTokenState);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,10 +37,11 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
       })
       .then((res) => {
         localStorage.setItem('access_token', res.data.access_token);
-        if (res.data.access_token) {
-          navigate(`/todo`);
-          alert('login success');
-        }
+        // if (res.data.access_token) {
+        //   navigate(`/todo`);
+        //   alert('login success');
+        // }
+        setToken(res.data.access_token);
       });
   };
 

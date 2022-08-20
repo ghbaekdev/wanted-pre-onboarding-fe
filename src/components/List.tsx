@@ -15,7 +15,6 @@ interface todoDataType {
     userId: string;
   };
   deleteList: (id: string) => void;
-  isToken: string | null;
   checkedInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -23,7 +22,6 @@ const List = ({
   todoData,
   detailData,
   deleteList,
-  isToken,
   checkedInput,
 }: todoDataType) => {
   const navigate = useNavigate();
@@ -39,26 +37,25 @@ const List = ({
           <ListHeader>
             <HeaderSpan>Title</HeaderSpan>
           </ListHeader>
-          {isToken &&
-            todoData.map(({ id, todo, isCompleted }) => {
-              return (
-                <ListDiv key={id}>
-                  <ListBox>
-                    <ListTitle onClick={() => goToDetail(id)}>
-                      {id === detailData.id ? detailData.todo : todo}
-                    </ListTitle>
-                    <div>
-                      <input
-                        type="checkbox"
-                        name="isCompleted"
-                        onChange={checkedInput}
-                      />
-                      <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
-                    </div>
-                  </ListBox>
-                </ListDiv>
-              );
-            })}
+          {todoData.map(({ id, todo, isCompleted }) => {
+            return (
+              <ListDiv key={id}>
+                <ListBox>
+                  <ListTitle onClick={() => goToDetail(id)}>
+                    {id === detailData.id ? detailData.todo : todo}
+                  </ListTitle>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="isCompleted"
+                      onChange={checkedInput}
+                    />
+                    <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
+                  </div>
+                </ListBox>
+              </ListDiv>
+            );
+          })}
         </ListWrap>
       )}
     </>

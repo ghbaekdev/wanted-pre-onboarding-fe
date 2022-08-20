@@ -5,6 +5,8 @@ import { customAxios } from './Auth/customAxios';
 import List from './components/List';
 import TodoDetail from './components/TodoDetail';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { userTokenState } from './store/store';
 
 const DETAIL_DATA = {
   todo: '',
@@ -20,13 +22,13 @@ interface dataType {
   userId: string;
 }
 
-export const isToken = localStorage.getItem('access_token');
-
 const Main = () => {
   const [inputValue, setInputValue] = useState({
     todo: '',
     isCompleted: false,
   });
+
+  const [token, setToken] = useRecoilState(userTokenState);
 
   const { todo, isCompleted } = inputValue;
 
@@ -72,12 +74,14 @@ const Main = () => {
 
   useEffect(() => {
     getDate();
-
-    // if (!isToken) {
-    //   navigate('/');
-    //   alert)
-    // }
   }, []);
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate('/');
+  //     alert('로그인을 해주세요');
+  //   }
+  // }, [token]);
 
   const handleDetailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,13 +94,6 @@ const Main = () => {
     });
     getDate();
   };
-
-  setTimeout(() => {
-    if (!isToken) {
-      alert('로그인을 해주세요.');
-      navigate('/');
-    }
-  }, 30000);
 
   const putTodo = async (id: string) => {
     await customAxios.put(`/todos/${id}`, {
@@ -138,7 +135,6 @@ const Main = () => {
           todoData={todoData}
           detailData={detailData}
           deleteList={deleteList}
-          isToken={isToken}
           checkedInput={checkedInput}
         />
       </TodoForm>
