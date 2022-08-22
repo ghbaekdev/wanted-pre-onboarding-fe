@@ -30,7 +30,7 @@ const Main = () => {
 
   const [token, setToken] = useRecoilState(userTokenState);
 
-  const { todo, isCompleted } = inputValue;
+  const { todo } = inputValue;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +39,7 @@ const Main = () => {
 
   const checkedInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    setInputValue({ ...inputValue, [name]: checked });
+    setDetailData({ ...detailData, [name]: checked });
   };
 
   const [todoData, setTodoData] = useState<dataType[]>([]);
@@ -65,23 +65,24 @@ const Main = () => {
   };
 
   useEffect(() => {
+    const defaultToken = localStorage.getItem('access_token');
+    if (!defaultToken) {
+      setToken('');
+      alert('로그인을 해주세요');
+      navigate('/');
+      return;
+    }
+
+    getDate();
+  }, []);
+
+  useEffect(() => {
     const detailId = params.id;
     if (!detailId) return;
 
     const filterData: any = todoData.filter((todo) => todo.id == detailId)[0];
     filterData ? setDetailData(filterData) : setDetailData(DETAIL_DATA);
   }, [params]);
-
-  useEffect(() => {
-    getDate();
-  }, []);
-
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate('/');
-  //     alert('로그인을 해주세요');
-  //   }
-  // }, [token]);
 
   const handleDetailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -115,6 +116,7 @@ const Main = () => {
 
   const deleteList = async (id: string) => {
     await customAxios.delete(`/todos/${id}`);
+    getDate();
   };
 
   return (
@@ -135,7 +137,6 @@ const Main = () => {
           todoData={todoData}
           detailData={detailData}
           deleteList={deleteList}
-          checkedInput={checkedInput}
         />
       </TodoForm>
 
@@ -149,6 +150,7 @@ const Main = () => {
             update={update}
             closeForm={CloseDetail}
             prevDetail={prevDetail}
+            checkedInput={checkedInput}
           />
         </SideWrap>
       )}

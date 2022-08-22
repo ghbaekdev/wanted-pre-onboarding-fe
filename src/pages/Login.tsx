@@ -46,11 +46,12 @@ export default function Main() {
   };
 
   useEffect(() => {
-    if (token) {
+    const defaultToken = localStorage.getItem('access_token');
+    if (defaultToken) {
+      setToken(defaultToken);
       navigate('/todo');
-      alert('login success');
     }
-  }, [token]);
+  }, []);
 
   return (
     <ButtonWrap>

@@ -15,6 +15,8 @@ interface dataType {
   onInputValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleEditMode: () => void;
   prevDetail: () => void;
+
+  checkedInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const TodoDetail = ({
@@ -25,12 +27,13 @@ const TodoDetail = ({
   onInputValue,
   handleEditMode,
   prevDetail,
+  checkedInput,
 }: dataType) => {
   return (
     <DetailWrap>
       {update ? (
         <DetailForm>
-          <DetailFormSpan>Title</DetailFormSpan>
+          <DetailFormSpan>상세</DetailFormSpan>
           <Input
             value={todo}
             name="todo"
@@ -41,17 +44,14 @@ const TodoDetail = ({
             }}
             onChange={onInputValue}
           />
-          {/* <DetailFormSpan>Content</DetailFormSpan>
-          <Input
-            value={content}
-            name="content"
-            style={{
-              margin: '30px',
-              width: '400px',
-              fontSize: '22px',
-            }}
-            onChange={onInputValue}
-          /> */}
+          <div> 완료여부 </div>
+          <DetailCheckbox
+            type="checkbox"
+            name="isCompleted"
+            checked={isCompleted}
+            onChange={checkedInput}
+          />
+
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>
@@ -61,10 +61,13 @@ const TodoDetail = ({
         </DetailForm>
       ) : (
         <DetailForm>
-          <DetailFormSpan>Title</DetailFormSpan>
+          <DetailFormSpan>상세</DetailFormSpan>
           <TitleLabel> {todo}</TitleLabel>
-          {/* <DetailFormSpan>Content</DetailFormSpan>
-          <ContentLabel>{content}</ContentLabel> */}
+          {isCompleted ? (
+            <CheckTrue>완료</CheckTrue>
+          ) : (
+            <CheckFalse>미완료 </CheckFalse>
+          )}
           <ButtonWrap>
             <Button onClick={closeForm}>닫기</Button>
             <Button onClick={prevDetail}>뒤로가기</Button>
@@ -96,10 +99,21 @@ const TitleLabel = styled.label`
   width: 400px;
   margin: 30px;
   font-size: 22px;
+  padding: 12px;
 `;
 
-const ContentLabel = styled(TitleLabel)`
-  font-size: 20px;
+const DetailCheckbox = styled.input`
+  width: 15px;
+  height: 15px;
+`;
+
+const CheckFalse = styled.span`
+  font-size: 24px;
+  color: red;
+`;
+
+const CheckTrue = styled(CheckFalse)`
+  color: blue;
 `;
 
 const DetailFormSpan = styled.span`

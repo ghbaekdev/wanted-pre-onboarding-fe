@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { customAxios } from '../Auth/customAxios';
 import styled from 'styled-components';
@@ -19,13 +19,14 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
 
   const { email, password } = loginInputValue;
 
+  const navigate = useNavigate();
+
   const [token, setToken] = useRecoilState(userTokenState);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginInputValue({ ...loginInputValue, [name]: value });
   };
-  const navigate = useNavigate();
 
   const LoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,11 +38,14 @@ const Login = ({ data: { title, url }, closeModal }: propsType) => {
       })
       .then((res) => {
         localStorage.setItem('access_token', res.data.access_token);
-        // if (res.data.access_token) {
-        //   navigate(`/todo`);
-        //   alert('login success');
-        // }
         setToken(res.data.access_token);
+        navigate('/todo');
+        alert('login success');
+      })
+      .catch((err) => {
+        if (err.response.data.message === 'Unauthorized') {
+          alert('사용자의 정보를 찾을수 없습니다.');
+        }
       });
   };
 

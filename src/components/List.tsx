@@ -15,15 +15,9 @@ interface todoDataType {
     userId: string;
   };
   deleteList: (id: string) => void;
-  checkedInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const List = ({
-  todoData,
-  detailData,
-  deleteList,
-  checkedInput,
-}: todoDataType) => {
+const List = ({ todoData, detailData, deleteList }: todoDataType) => {
   const navigate = useNavigate();
 
   const goToDetail = (id: string) => {
@@ -45,11 +39,11 @@ const List = ({
                     {id === detailData.id ? detailData.todo : todo}
                   </ListTitle>
                   <div>
-                    <input
-                      type="checkbox"
-                      name="isCompleted"
-                      onChange={checkedInput}
-                    />
+                    {isCompleted ? (
+                      <CheckTrue>완료</CheckTrue>
+                    ) : (
+                      <CheckFalse>미완료 </CheckFalse>
+                    )}
                     <DeleteBtn onClick={() => deleteList(id)}>X</DeleteBtn>
                   </div>
                 </ListBox>
@@ -90,10 +84,20 @@ const ListTitle = styled.div`
 const DeleteBtn = styled.button`
   width: 30px;
   height: 30px;
+  margin-left: 15px;
 `;
 
 const ListDiv = styled.div`
   cursor: pointer;
+`;
+
+const CheckFalse = styled.span`
+  font-size: 16px;
+  color: red;
+`;
+
+const CheckTrue = styled(CheckFalse)`
+  color: blue;
 `;
 
 export default List;
